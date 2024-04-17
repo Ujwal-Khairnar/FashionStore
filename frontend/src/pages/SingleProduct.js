@@ -8,6 +8,7 @@ const Products = () => {
     // const { name } = useContext(CartContext) 
 
     const [products, setProducts] = useState(null);
+    const [recomon,setRecomon ] = useState(null);
 
     const param = useParams();
     const history = useHistory();
@@ -18,12 +19,33 @@ const Products = () => {
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
-        console.log(response)
-        const data = await response.json()
-        console.log(data)
+        });
+        const data = await response.json();
         setProducts(data);
-    }
+    
+        // Upload image to FastAPI backend
+        if (data && data.length > 0 && data[0].image) {
+            const imageUrl = `http://localhost:4000/${data[0].image}`;
+            
+            // Download the image
+            const imageResponse = await fetch(imageUrl);
+            const imageBlob = await imageResponse.blob();
+    
+            const formData = new FormData();
+            formData.append('file', imageBlob, data[0].image);
+    
+            const uploadResponse = await fetch('http://localhost:8000/predict/', {
+                method: 'POST',
+                body: formData
+            });
+    
+            const uploadData = await uploadResponse.json();
+            console.log(uploadData);
+
+            setRecomon(uploadData?.recommended_images);
+        }
+    };
+    
 
 
     const { cart, setCart } = useContext(CartContext);
@@ -68,8 +90,19 @@ const Products = () => {
                         <p>Category: {products[0].category}</p>
                         <p>Rating: {products[0].rating}</p>
                         <h5 className="my-3">Price: ${products[0].price}</h5>
-
                         <Link className="btn-add-tocart" onClick={addToCart}>Add to Cart</Link>
+                        <h6 className='mt-4'>Recommondations:</h6>
+                        <div className='d-flex align-items-center'>
+                            {
+                                recomon && recomon.map((recomon, i)=>{
+                                    recomon = recomon.replace("\\","/");
+
+                                    return (
+                                        <img src={`http://localhost:8000/${recomon}`} className='px-3 mt-3' alt="recomon" />
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
                 </div>
                 :

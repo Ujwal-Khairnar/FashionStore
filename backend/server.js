@@ -11,7 +11,7 @@ const cors = require('cors')
 
 app.use(cors())
 
-const allowedOrigins = ['https://fashion-store-drab.vercel.app' , 'http://localhost:3000'];
+const allowedOrigins = ['https://fashion-store-drab.vercel.app' , 'http://localhost:3000', 'http://localhost:8000'];
 const corsOptions = {
     origin: function (origin, callback) {
         if (allowedOrigins.includes(origin) || !origin) {
