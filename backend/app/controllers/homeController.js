@@ -4,7 +4,7 @@ function homeController() {
     return {
         async index(req, res) {
             const products = await Product.find();
-           return res.status(200).json(products);
+            return res.status(200).json(products);
         },
         async category(req, res) {
             console.log(req.params.category)
@@ -44,6 +44,7 @@ function homeController() {
                 })
             } catch (error) {
                 console.log(error);
+                return res.status(500).json({msg:"Error ",error})
             }
 
         }
