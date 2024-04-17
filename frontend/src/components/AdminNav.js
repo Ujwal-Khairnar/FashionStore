@@ -18,7 +18,7 @@ const AdminNav = () => {
                     <Link to="/admin/orders">ManageOrders</Link>
                 </li>
             </ul>
-        </div >
+        </div>
     )
 }
 
